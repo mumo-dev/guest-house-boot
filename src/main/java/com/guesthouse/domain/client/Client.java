@@ -6,12 +6,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.guesthouse.domain.AuditModel;
+import com.guesthouse.domain.AbstractPersistentEntity;
+import com.guesthouse.domain.address.Address;
 import com.guesthouse.domain.user.User;
 
 @Entity
 @Table( name = "clients" )
-public class Client extends AuditModel {
+public class Client extends AbstractPersistentEntity {
 
     private static final long serialVersionUID = 18989728277272L;
 
@@ -24,6 +25,10 @@ public class Client extends AuditModel {
     @ManyToOne( )
     @JoinColumn( name = "fk_user", nullable = false )
     private User user;
+
+    @ManyToOne
+    @JoinColumn( name = "fk_address", nullable = false )
+    private Address address;
 
     public String getPhone() {
 
@@ -58,6 +63,18 @@ public class Client extends AuditModel {
     public void setUser( User user ) {
 
         this.user = user;
+    }
+
+
+    public Address getAddress() {
+
+        return address;
+    }
+
+
+    public void setAddress( Address address ) {
+
+        this.address = address;
     }
 
 }

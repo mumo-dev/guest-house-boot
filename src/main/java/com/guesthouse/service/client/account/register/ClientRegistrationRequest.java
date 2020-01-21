@@ -8,6 +8,9 @@ public class ClientRegistrationRequest {
     private String password;
     private String phone;
     private Integer idNumber;
+    private Long countyId;
+    private String subCountyName;
+    private String town;
 
     public ClientRegistrationRequest() {
 
@@ -83,6 +86,42 @@ public class ClientRegistrationRequest {
     public void setIdNumber( Integer idNumber ) {
 
         this.idNumber = idNumber;
+    }
+
+
+    public String getSubCountyName() {
+
+        return subCountyName;
+    }
+
+
+    public void setSubCountyName( String subCountyName ) {
+
+        this.subCountyName = subCountyName;
+    }
+
+
+    public String getTown() {
+
+        return town;
+    }
+
+
+    public void setTown( String town ) {
+
+        this.town = town;
+    }
+
+
+    public Long getCountyId() {
+
+        return countyId;
+    }
+
+
+    public void setCountyId( Long countyId ) {
+
+        this.countyId = countyId;
     }
 
 }

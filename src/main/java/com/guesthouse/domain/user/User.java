@@ -6,23 +6,16 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import com.guesthouse.domain.AuditModel;
+import com.guesthouse.domain.AbstractPersistentEntity;
 
 @Entity
 @Table( name = "users" )
-public class User extends AuditModel {
+public class User extends AbstractPersistentEntity {
 
     private static final long serialVersionUID = 109877777777777774L;
-
-    @Id
-    @GeneratedValue( strategy = GenerationType.AUTO )
-    private Long id;
 
     @Column( nullable = false, name = "first_name", length = 100 )
     private String firstName;
@@ -43,24 +36,13 @@ public class User extends AuditModel {
     private List<Role> roles = new ArrayList<>();
 
     public void addRole( Role role ) {
+
         roles.add( role );
     }
 
 
     public User() {
 
-    }
-
-
-    public Long getId() {
-
-        return id;
-    }
-
-
-    public void setId( Long id ) {
-
-        this.id = id;
     }
 
 

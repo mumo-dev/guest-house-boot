@@ -5,27 +5,22 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.guesthouse.domain.AbstractPersistentEntity;
+
 @Entity
 @Table( name = "roles" )
-public class Role {
+public class Role extends AbstractPersistentEntity {
 
-
-    @Id
-    @GeneratedValue( strategy = GenerationType.AUTO )
-    private Long id;
+    private static final long serialVersionUID = -8876551129681267144L;
 
     @Column( nullable = false, unique = true )
     private String name;
 
     @ManyToMany( mappedBy = "roles" )
     private List<User> users = new ArrayList<>();
-
 
     public Role() {
 
@@ -35,18 +30,6 @@ public class Role {
     public Role( String name ) {
 
         this.name = name;
-    }
-
-
-    public Long getId() {
-
-        return id;
-    }
-
-
-    public void setId( Long id ) {
-
-        this.id = id;
     }
 
 

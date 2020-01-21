@@ -2,13 +2,21 @@ package com.guesthouse.service.client.account.register;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.guesthouse.domain.address.Address;
+import com.guesthouse.domain.address.AddressType;
+import com.guesthouse.domain.address.AddressTypeEnum;
+import com.guesthouse.domain.address.County;
 import com.guesthouse.domain.client.Client;
 import com.guesthouse.domain.user.Role;
 import com.guesthouse.domain.user.RoleEnum;
 import com.guesthouse.domain.user.User;
+import com.guesthouse.repository.address.AddressRepository;
+import com.guesthouse.repository.address.AddressTypeRepository;
+import com.guesthouse.repository.address.CountyRepository;
 import com.guesthouse.repository.client.ClientRepository;
 import com.guesthouse.repository.user.RoleRepository;
 import com.guesthouse.repository.user.UserRepository;
@@ -17,25 +25,26 @@ import com.guesthouse.shared.SaveResponse;
 @Service
 public class ClientRegistrationServiceImpl implements ClientRegistrationService {
 
-    private final PasswordEncoder encoder;
+    @Autowired
+    private PasswordEncoder encoder;
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-    private final ClientRepository clientRepository;
+    @Autowired
+    private ClientRepository clientRepository;
 
-    public ClientRegistrationServiceImpl( PasswordEncoder encoder,
-            UserRepository userRepository,
-            RoleRepository roleRepository, ClientRepository clientRepository ) {
+    @Autowired
+    private CountyRepository countyRepository;
 
-        this.encoder = encoder;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.clientRepository = clientRepository;
+    @Autowired
+    private AddressTypeRepository addressTypeRepository;
 
-    }
-
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Override
     public SaveResponse save( ClientRegistrationRequest request ) {
@@ -43,6 +52,23 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
         if ( userRepository.findByEmail( request.getEmail() ).isPresent() ) {
             return new SaveResponse( false, "Email already exists." );
         }
+
+        User savedUser = saveUser( request );
+
+        Address address = saveAddress( request );
+        Client client = new Client();
+        client.setIdNumber( request.getIdNumber() );
+        client.setPhone( request.getPhone() );
+        client.setUser( savedUser );
+        client.setAddress( address );
+        clientRepository.save( client );
+
+        return new SaveResponse( true, null );
+
+    }
+
+
+    private User saveUser( ClientRegistrationRequest request ) {
 
         User user = new User();
         user.setActive( true );
@@ -54,15 +80,23 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
         Role role = getRole( roleId );
         user.addRole( role );
         User savedUser = userRepository.save( user );
+        return savedUser;
+    }
 
-        Client client = new Client();
-        client.setIdNumber( request.getIdNumber() );
-        client.setPhone( request.getPhone() );
-        client.setUser( savedUser );
-        clientRepository.save( client );
 
-        return new SaveResponse( true, null );
+    private Address saveAddress( ClientRegistrationRequest request ) {
 
+        County county = countyRepository.findById( request.getCountyId() ).get();
+        Long addressTypeId = AddressTypeEnum.CLIENT_TYPE.getId();
+        AddressType addressType = addressTypeRepository.findById( addressTypeId ).get();
+
+        Address address = new Address();
+        address.setSubCountyName( request.getSubCountyName() );
+        address.setTown( request.getTown() );
+        address.setCounty( county );
+        address.setAddressType( addressType );
+        Address savedAddress = addressRepository.save( address );
+        return savedAddress;
     }
 
 

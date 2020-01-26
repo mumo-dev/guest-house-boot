@@ -8,8 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -25,55 +27,30 @@ public class AbstractPersistentEntity implements Serializable {
     /**
      * You need to create a sequence in postgresql:
      *
-     * CREATE SEQUENCE uweee_sequence START 10001;
+     * CREATE SEQUENCE enigma_sequence START 10001;
      *
-     * Starts at 10001 to allow for standing data. All standing data must have a
-     * id of less than 10001 else duplicate key exceptions will occur
+     * Starts at 10001 to allow for standing data. All standing data must have a id
+     * of less than 10001 else duplicate key exceptions will occur
      */
-    //    @Id
-    //    @Column( name = "ID" )
-    //    @SequenceGenerator( name = "identifier", sequenceName = "uweee_sequence",
-    //            allocationSize = 1, initialValue = 10001 )
-    //    @GeneratedValue( strategy = GenerationType.SEQUENCE,
-    //            generator = "identifier" )
-    //    @NotNull
-    //    private Long id;
-
-    // https://stackoverflow.com/questions/19665105/how-to-maintain-hibernate-id-sequence-with-mysql
-    //    @Id
-    //    @Column( name = "ID", columnDefinition="int unsigned" )
-    //    @GeneratedValue(strategy=GenerationType.AUTO)
-    //    @NotNull
     @Id
-    @Column( name = "id", columnDefinition = "INT(10) UNSIGNED" )
-    @GeneratedValue( strategy = GenerationType.IDENTITY )
+    @Column( name = "ID" )
+    @SequenceGenerator( name = "identifier", sequenceName = "guesthouse_sequence",
+            allocationSize = 1,
+            initialValue = 10001 )
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "identifier" )
+    @NotNull
     private Long id;
 
-    // postgres
-    // @Temporal( TemporalType.TIMESTAMP )
-    // @Column( name = "created_timestamp", updatable = true, nullable = false,
-    //          columnDefinition = "TIMESTAMP WITH TIME ZONE" )
-    // private Calendar createdTimestamp;
-
-    // mysql
     @Temporal( TemporalType.TIMESTAMP )
     @CreationTimestamp
-    @Column( name = "created_at",
-            updatable = true, nullable = false,
-            columnDefinition = "timestamp default current_timestamp" )
+    @Column( name = "created_at", updatable = false, nullable = false,
+            columnDefinition = "TIMESTAMP WITH TIME ZONE" )
     private Calendar createdAt;
 
-    // postgres
-    // @Temporal( TemporalType.TIMESTAMP )
-    // @Column( name = "updated_timestamp", updatable = true, nullable = false,
-    //          columnDefinition = "TIMESTAMP WITH TIME ZONE" )
-    // private Calendar updatedTimestamp;
-
-    // mysql
     @Temporal( TemporalType.TIMESTAMP )
     @UpdateTimestamp
     @Column( name = "updated_at", updatable = true, nullable = false,
-            columnDefinition = "timestamp default current_timestamp on update current_timestamp" )
+            columnDefinition = "TIMESTAMP WITH TIME ZONE" )
     private Calendar updatedAt;
 
     public Long getId() {

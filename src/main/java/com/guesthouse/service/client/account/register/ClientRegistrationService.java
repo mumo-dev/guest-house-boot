@@ -4,5 +4,7 @@ import com.guesthouse.shared.SaveResponse;
 
 public interface ClientRegistrationService {
 
+    ClientRegistrationInitialData getInitialData();
+
     SaveResponse save( ClientRegistrationRequest request );
 }

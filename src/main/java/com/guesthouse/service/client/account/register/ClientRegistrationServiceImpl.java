@@ -1,5 +1,6 @@
 package com.guesthouse.service.client.account.register;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import com.guesthouse.domain.client.Client;
 import com.guesthouse.domain.user.Role;
 import com.guesthouse.domain.user.RoleEnum;
 import com.guesthouse.domain.user.User;
+import com.guesthouse.helper.county.CountyHelper;
+import com.guesthouse.helper.county.CountyTransfer;
 import com.guesthouse.repository.address.AddressRepository;
 import com.guesthouse.repository.address.AddressTypeRepository;
 import com.guesthouse.repository.address.CountyRepository;
@@ -45,6 +48,9 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
 
     @Autowired
     private AddressRepository addressRepository;
+
+    @Autowired
+    private CountyHelper countyHelper;
 
     @Override
     public SaveResponse save( ClientRegistrationRequest request ) {
@@ -104,5 +110,17 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
 
         Optional<Role> role = roleRepository.findById( id );
         return role.orElse( null );
+    }
+
+
+    @Override
+    public ClientRegistrationInitialData getInitialData() {
+
+        List<CountyTransfer> countyTransfers = countyHelper.createCountyTransfers();
+
+        ClientRegistrationInitialData initialData = new ClientRegistrationInitialData(
+                countyTransfers );
+
+        return initialData;
     }
 }

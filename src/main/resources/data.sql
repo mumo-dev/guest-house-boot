@@ -15,3 +15,9 @@ INSERT INTO roles(id, name, created_at, updated_at) VALUES (2, 'CLIENT', current
 INSERT INTO roles(id, name, created_at, updated_at) VALUES (3, 'CUSTOMER',current_timestamp, current_timestamp);
 
 INSERT INTO users_roles(users_id, roles_id) VALUES (1, 1)
+
+
+INSERT INTO counties(id, name, created_at, updated_at) VALUES (1, 'Mombasa', current_timestamp, current_timestamp);
+INSERT INTO counties(id, name, created_at, updated_at) VALUES (2, 'Nairobi', current_timestamp, current_timestamp);
+INSERT INTO counties(id, name, created_at, updated_at) VALUES (3, 'Kwale', current_timestamp, current_timestamp);
+INSERT INTO counties(id, name, created_at, updated_at) VALUES (4, 'Nakuru', current_timestamp, current_timestamp);

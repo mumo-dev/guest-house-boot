@@ -15,7 +15,7 @@ import com.guesthouse.service.client.account.register.ClientRegistrationService;
 import com.guesthouse.shared.SaveResponse;
 
 @RestController
-@RequestMapping( "/guesthouse/client" )
+@RequestMapping( "/guesthouse/api/client" )
 public class ClientRegistrationController {
 
     @Autowired
@@ -24,7 +24,8 @@ public class ClientRegistrationController {
     @GetMapping( "/register/initialdata" )
     public ResponseEntity<ClientRegistrationInitialData> getInitialData() {
 
-        ClientRegistrationInitialData initialData = clientRegistrationService.getInitialData();
+        ClientRegistrationInitialData initialData = clientRegistrationService
+                .getInitialData();
         return ResponseEntity.ok( initialData );
     }
 

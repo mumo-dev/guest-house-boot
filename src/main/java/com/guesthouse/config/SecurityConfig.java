@@ -1,5 +1,11 @@
 package com.guesthouse.config;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +26,11 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import com.guesthouse.security.RestAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +49,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Qualifier( "customUserDetailsService" )
     @Autowired
     private UserDetailsService userDetailsService;
+
+    private static final List<String> AUTH_LIST = Arrays.asList(
+            "/swagger-resources/**",
+            "/swagger-ui.html**",
+            "/webjars/**",
+            "favicon.ico" );
+
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Bean
     @Override
@@ -66,7 +86,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure( WebSecurity web ) throws Exception {
 
-        web.ignoring().antMatchers( "/guesthouse/api/client/register/save" );
+        web.ignoring().antMatchers(
+                "/v2/api-docs",
+                "/swagger-ui.html",
+                "/webjars/**",
+                "**/swagger-resources/**",
+                "/guesthouse/api/client/register/save" );
 
     }
 
@@ -81,6 +106,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/guesthouse/api/**" ).authenticated().and()
                 .httpBasic()
                 .realmName( securityRealm ).and().csrf().disable();
+
+        //        http
+        //                .antMatcher( "/**" ).authorizeRequests().anyRequest().authenticated()
+        //                .and()
+        //                .exceptionHandling()
+        //                .defaultAuthenticationEntryPointFor( swaggerAuthenticationEntryPoint(),
+        //                        new CustomRequestMatcher( AUTH_LIST ) )
+        //                .and()
+        //                .httpBasic()
+        //                .authenticationEntryPoint( restAuthenticationEntryPoint )
+        //                .and()
+        //                .csrf().disable();
     }
 
 
@@ -108,6 +145,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         defaultTokenServices.setAccessTokenValiditySeconds( 60 );
         defaultTokenServices.setSupportRefreshToken( true );
         return defaultTokenServices;
+    }
+
+
+    @Bean
+    public BasicAuthenticationEntryPoint swaggerAuthenticationEntryPoint() {
+
+        BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
+        entryPoint.setRealmName( "Swagger Realm" );
+        return entryPoint;
+    }
+
+    private class CustomRequestMatcher implements RequestMatcher {
+
+        private List<AntPathRequestMatcher> matchers;
+
+        private CustomRequestMatcher( List<String> matchers ) {
+
+            this.matchers = matchers.stream().map( AntPathRequestMatcher::new ).collect( Collectors
+                    .toList() );
+        }
+
+
+        @Override
+        public boolean matches( HttpServletRequest request ) {
+
+            return matchers.stream().anyMatch( a -> a.matches( request ) );
+        }
+
     }
 
 }

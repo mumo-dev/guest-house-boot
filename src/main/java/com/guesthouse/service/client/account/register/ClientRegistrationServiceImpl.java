@@ -15,6 +15,7 @@ import com.guesthouse.domain.client.Client;
 import com.guesthouse.domain.user.Role;
 import com.guesthouse.domain.user.RoleEnum;
 import com.guesthouse.domain.user.User;
+import com.guesthouse.exception.EmailAlreadyExistsException;
 import com.guesthouse.helper.county.CountyHelper;
 import com.guesthouse.helper.county.CountyTransfer;
 import com.guesthouse.repository.address.AddressRepository;
@@ -52,28 +53,6 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
     @Autowired
     private CountyHelper countyHelper;
 
-    @Override
-    public SaveResponse save( ClientRegistrationRequest request ) {
-
-        if ( userRepository.findByEmail( request.getEmail() ).isPresent() ) {
-            return new SaveResponse( false, "Email already exists." );
-        }
-
-        User savedUser = saveUser( request );
-
-        Address address = saveAddress( request );
-        Client client = new Client();
-        client.setIdNumber( request.getIdNumber() );
-        client.setPhone( request.getPhone() );
-        client.setUser( savedUser );
-        client.setAddress( address );
-        clientRepository.save( client );
-
-        return new SaveResponse( true, null );
-
-    }
-
-
     private User saveUser( ClientRegistrationRequest request ) {
 
         User user = new User();
@@ -110,6 +89,27 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
 
         Optional<Role> role = roleRepository.findById( id );
         return role.orElse( null );
+    }
+
+
+    @Override
+    public SaveResponse save( ClientRegistrationRequest request ) {
+
+        if ( userRepository.findByEmail( request.getEmail() ).isPresent() ) {
+            throw new EmailAlreadyExistsException( "Email already exists" );
+        }
+
+        User savedUser = saveUser( request );
+
+        Address address = saveAddress( request );
+        Client client = new Client();
+        client.setIdNumber( request.getIdNumber() );
+        client.setPhone( request.getPhone() );
+        client.setUser( savedUser );
+        client.setAddress( address );
+        clientRepository.save( client );
+        return new SaveResponse( Boolean.TRUE );
+
     }
 
 

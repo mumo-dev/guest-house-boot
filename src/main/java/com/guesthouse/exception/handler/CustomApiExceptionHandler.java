@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.guesthouse.exception.EmailAlreadyExistsException;
 import com.guesthouse.exception.ResourceNotFoundException;
 
 @ControllerAdvice
@@ -45,13 +46,25 @@ public class CustomApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler( value = ResourceNotFoundException.class )
-    public ResponseEntity<ApiError> handleResourceNotFoundExceptions( ResourceNotFoundException ex,
+    public ResponseEntity<ApiError> handleResourceNotFoundException( ResourceNotFoundException ex,
             HttpServletRequest request ) {
 
         ApiError error = new ApiError( HttpStatus.NOT_FOUND, "Resource Not Found",
                 ex.getMessage() );
 
         return ResponseEntity.status( HttpStatus.NOT_FOUND ).body( error );
+
+    }
+
+
+    @ExceptionHandler( value = EmailAlreadyExistsException.class )
+    public ResponseEntity<ApiError> handleEmailAlreadyExistException(
+            EmailAlreadyExistsException ex, HttpServletRequest request ) {
+
+        ApiError error = new ApiError( HttpStatus.BAD_REQUEST, "Email already exissts",
+                ex.getMessage() );
+
+        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( error );
 
     }
 }

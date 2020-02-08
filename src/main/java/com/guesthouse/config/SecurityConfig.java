@@ -91,6 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-ui.html",
                 "/webjars/**",
                 "**/swagger-resources/**",
+                "/guesthouse/api/client/register/initialdata",
                 "/guesthouse/api/client/register/save" );
 
     }

@@ -104,7 +104,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 SessionCreationPolicy.STATELESS ).and().authorizeRequests()
                 .antMatchers( "/actuator/**", "/api-docs/**" ).permitAll()
                 .antMatchers().permitAll()
-                .antMatchers( "/guesthouse/api/**" ).authenticated().and()
+                .antMatchers( "/guesthouse/**" ).authenticated().and()
                 .httpBasic()
                 .realmName( securityRealm ).and().csrf().disable();
 

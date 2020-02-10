@@ -7,7 +7,7 @@ public class ClientRegistrationRequest {
     private String email;
     private String password;
     private String phone;
-    private Integer idNumber;
+    private String idNumber;
     private Long countyId;
     private String subCountyName;
     private String town;
@@ -77,13 +77,13 @@ public class ClientRegistrationRequest {
     }
 
 
-    public Integer getIdNumber() {
+    public String getIdNumber() {
 
         return idNumber;
     }
 
 
-    public void setIdNumber( Integer idNumber ) {
+    public void setIdNumber( String idNumber ) {
 
         this.idNumber = idNumber;
     }

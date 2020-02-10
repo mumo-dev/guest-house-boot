@@ -20,7 +20,7 @@ public class Client extends AbstractPersistentEntity {
     private String phone;
 
     @Column( name = "id_number", nullable = false, length = 15 )
-    private Integer idNumber;
+    private String idNumber;
 
     @ManyToOne( )
     @JoinColumn( name = "fk_user", nullable = false )
@@ -42,13 +42,13 @@ public class Client extends AbstractPersistentEntity {
     }
 
 
-    public Integer getIdNumber() {
+    public String getIdNumber() {
 
         return idNumber;
     }
 
 
-    public void setIdNumber( Integer idNumber ) {
+    public void setIdNumber( String idNumber ) {
 
         this.idNumber = idNumber;
     }

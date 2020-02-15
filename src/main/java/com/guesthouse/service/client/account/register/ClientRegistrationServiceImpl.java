@@ -2,6 +2,8 @@ package com.guesthouse.service.client.account.register;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,8 @@ import com.guesthouse.repository.user.UserRepository;
 import com.guesthouse.shared.SaveResponse;
 
 @Service
-public class ClientRegistrationServiceImpl implements ClientRegistrationService {
+public class ClientRegistrationServiceImpl implements
+        ClientRegistrationService {
 
     @Autowired
     private PasswordEncoder encoder;
@@ -74,9 +77,11 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
 
     private Address saveAddress( ClientRegistrationRequest request ) {
 
-        County county = countyRepository.findById( request.getCountyId() ).get();
+        County county = countyRepository.findById( request.getCountyId() )
+                .get();
         Long addressTypeId = AddressTypeEnum.CLIENT_TYPE.getId();
-        AddressType addressType = addressTypeRepository.findById( addressTypeId ).get();
+        AddressType addressType = addressTypeRepository.findById(
+                addressTypeId ).get();
 
         Address address = new Address();
         address.setSubCountyName( request.getSubCountyName() );
@@ -88,6 +93,7 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
     }
 
 
+    @Transactional
     @Override
     public SaveResponse save( ClientRegistrationRequest request ) {
 
@@ -114,10 +120,12 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
     @Override
     public ClientRegistrationInitialData getInitialData() {
 
-        List<CountyTransfer> countyTransfers = countyHelper.createCountyTransfers();
+        List<CountyTransfer> countyTransfers = countyHelper
+                .createCountyTransfers();
 
-        ClientRegistrationInitialData initialData = new ClientRegistrationInitialData(
-                countyTransfers );
+        ClientRegistrationInitialData initialData =
+                new ClientRegistrationInitialData(
+                        countyTransfers );
 
         return initialData;
     }

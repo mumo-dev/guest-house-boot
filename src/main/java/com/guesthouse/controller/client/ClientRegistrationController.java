@@ -15,7 +15,7 @@ import com.guesthouse.service.client.account.register.ClientRegistrationService;
 import com.guesthouse.shared.SaveResponse;
 
 @RestController
-@RequestMapping( "/guesthouse/api/client" )
+@RequestMapping( "/guesthouse/client" )
 public class ClientRegistrationController {
 
     @Autowired

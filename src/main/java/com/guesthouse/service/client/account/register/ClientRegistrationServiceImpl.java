@@ -1,7 +1,6 @@
 package com.guesthouse.service.client.account.register;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,8 +60,12 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
         user.setLastName( request.getLastName() );
         user.setEmail( request.getEmail() );
         user.setPassword( encoder.encode( request.getPassword() ) );
-        Long roleId = RoleEnum.CLIENT.getId();
-        Role role = getRole( roleId );
+
+        Role role = roleRepository.findById( RoleEnum.CLIENT.getId() ).get();
+        user.addRole( role );
+
+        //remove this code later
+        role = roleRepository.findById( RoleEnum.EMAIL_VALIDATED.getId() ).get();
         user.addRole( role );
         User savedUser = userRepository.save( user );
         return savedUser;
@@ -85,13 +88,6 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
     }
 
 
-    private Role getRole( Long id ) {
-
-        Optional<Role> role = roleRepository.findById( id );
-        return role.orElse( null );
-    }
-
-
     @Override
     public SaveResponse save( ClientRegistrationRequest request ) {
 
@@ -108,6 +104,8 @@ public class ClientRegistrationServiceImpl implements ClientRegistrationService 
         client.setUser( savedUser );
         client.setAddress( address );
         clientRepository.save( client );
+
+        //send validation email
         return new SaveResponse( Boolean.TRUE );
 
     }

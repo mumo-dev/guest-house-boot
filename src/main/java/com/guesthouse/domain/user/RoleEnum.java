@@ -4,7 +4,8 @@ public enum RoleEnum {
 
     ADMIN( 1L, "ADMIN" ),
     CLIENT( 2L, "CLIENT" ),
-    CUSTOMER( 3L, "CUSTOMER" );
+    CUSTOMER( 3L, "CUSTOMER" ),
+    EMAIL_VALIDATED( 4L, "EMAIL_VALIDATED" );
 
     private RoleEnum( Long id, String name ) {
 

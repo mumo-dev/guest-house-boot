@@ -18,7 +18,7 @@ public class UserController {
     private LoggedInUserDetailService loggedInUserDetailService;
 
     @RequestMapping( value = "/loggedinuserdetails/get",
-            method = RequestMethod.POST )
+            method = RequestMethod.GET )
     public ResponseEntity<LoggedInUserDetailInitialData> getLoggedInUserDetails() {
 
         LoggedInUserDetailInitialData loggedInDetails = loggedInUserDetailService
